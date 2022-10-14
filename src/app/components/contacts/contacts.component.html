@@ -1,0 +1,71 @@
+<div class="container">
+    <p></p>
+    <H3>Contacts</H3>
+    <form>
+        <div class="mb-3 row">
+            <label for="table-complete-search" class="col-auto col-form-label">Full text search:</label>
+            <div class="col-auto">
+                <input id="table-complete-search" type="text" class="form-control" name="searchTerm"
+                    [(ngModel)]="service.searchTerm">
+            </div>
+            <div class="col-auto">
+                <div class="spinner-border text-primary" role="status" *ngIf="service.loading$ | async">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+            
+            <div class="col-md-auto justify-content-md-end">        
+                <button class="btn btn-outline-primary me-md-2" type="button">Add Person</button>
+                <button class="btn btn-outline-secondary" type="button">Add Organization</button>
+            </div>
+        </div>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col" sortable="type" (sort)="onSort($event)">Type</th>
+                    <th scope="col" sortable="name">Name</th>
+                    <th scope="col" sortable="email" (sort)="onSort($event)">Email</th>
+                    <th scope="col" sortable="street" (sort)="onSort($event)">Street</th>
+                    <th scope="col" sortable="city" (sort)="onSort($event)">City</th>
+                    <th scope="col" sortable="country" (sort)="onSort($event)">Country</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let contact of contacts$ | async">
+                    <th scope="row">{{ contact.id }}</th>
+                    <td>
+                        <fa-icon [icon]="getIcon(contact.type)" [styles]="{'color': 'gray'}" class="me-2"></fa-icon>
+                    </td>
+                    <td>
+                        <ngb-highlight [result]="getName(contact)" [term]="service.searchTerm"></ngb-highlight>
+                    </td>
+                    <td>
+                        <ngb-highlight [result]="contact.email" [term]="service.searchTerm"></ngb-highlight>
+                    </td>
+                    <td>
+                        <ngb-highlight [result]="contact.street" [term]="service.searchTerm"></ngb-highlight>
+                    </td>
+                    <td>
+                        <ngb-highlight [result]="contact.city" [term]="service.searchTerm"></ngb-highlight>
+                    </td>
+                    <td>
+                        <ngb-highlight [result]="contact.country" [term]="service.searchTerm"></ngb-highlight>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="d-flex justify-content-between p-2">
+            <ngb-pagination [collectionSize]="(total$ | async)!" [(page)]="service.page" [pageSize]="service.pageSize">
+            </ngb-pagination>
+
+            <select class="form-select" style="width: auto" name="pageSize" [(ngModel)]="service.pageSize">
+                <option [ngValue]="2">2 items per page</option>
+                <option [ngValue]="4">4 items per page</option>
+                <option [ngValue]="8">8 items per page</option>
+            </select>
+        </div>
+
+    </form>
+</div>
